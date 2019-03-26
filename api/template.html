@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>New</title>
+    <style>
+      body { font-family: 'Arial'; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <h1>{{headline}}</h1>
+    {{#each articles}}
+      <div class="article">
+        <h2>{{title}}</h2>
+        <small>{{author}}, {{source.name}}</small>
+        <img src="{{urlToImage}}" alt="" width="50%" />
+        <p>{{description}}</p>
+      </div>
+    {{/each}}
+  </body>
+</html>
