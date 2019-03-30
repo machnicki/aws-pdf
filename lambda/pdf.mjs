@@ -12,10 +12,10 @@ const handler = async (event, context) => {
   try {
     const pdfUrl = await new Promise((resolve, error) => {
       try {
-        pdf.create(html, {
+        pdf.create(html, { // SIGKILL error for large payloads - setting more memory in Lambda fixes it
           format: 'A4',
           phantomPath: `${path.resolve()}/phantomjs`, 
-          timeout: '500000',
+          timeout: '100000',
         })
           .toStream(async function(err, stream) {
             if (err) throw err

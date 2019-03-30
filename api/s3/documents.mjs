@@ -58,6 +58,6 @@ export const getSignedUrl = (name) => s3client.getSignedUrl('putObject', {
 export const getUrl = async (name) => {
   if (await doestExist(name)) {
     //return getSignedUrl(name)
-    return `https://s3.eu-west-2.amazonaws.com/${BUCKET}/documents/${name}`
+    return `${config.baseUrl}/${BUCKET}/documents/${name}`
   } return undefined
 }

@@ -14,6 +14,7 @@ const S3 = {
   region: 'eu-west-2',
   endpoint: useLocal ? `http://${process.env.LOCALSTACK_HOSTNAME || 'localhost'}:4572` : undefined,
   s3ForcePathStyle: true,
+  baseUrl: useLocal ? 'http://localhost:4572' : 'https://s3.eu-west-2.amazonaws.com',
   ...isLambda ? {} : {
     accessKeyId: useLocal ? 'access-key' : process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: useLocal ? 'secret-key' : process.env.AWS_SECRET_ACCESS_KEY,
