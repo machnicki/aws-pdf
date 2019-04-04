@@ -1,52 +1,72 @@
 import React, { Component } from 'react'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import _get from 'lodash/get'
 
 import http from './http'
-import './App.scss'
+import FormPicker from './form-picker'
+import './app.scss'
 
 class App extends Component {
   state = {
     isLoading: false,
+    country: 'US',
+    category: 'business',
   }
 
   handleSubmit = (event) => {
     event.preventDefault()
     this.setState({ isLoading: true })
+
+    const { country, category } = this.state
+
     http.request({
-      data: { country: this.$input1.value, category: this.$input2.value },
+      data: { country, category },
       method: 'post',
     })
       .then((response) => {
-        console.log('response', response)
         if (response.data) window.open(response.data)
       })
       .catch((error) => console.error('error', _get(error, 'response.data.error') || error))
       .then(() => this.setState({ isLoading: false }))
   }
 
+  setValue = name => value => this.setState({ [name]: value })
+
   render() {
     const { isLoading } = this.state
 
     return  (
-      <div id="app">
-        <h1>Get todays news</h1>
-        <Form onSubmit={!isLoading ? this.handleSubmit : null}>
-          <Form.Group controlId="coutry">
-            <Form.Label>Country</Form.Label>
-            <Form.Control type="text" defaultValue="US" ref={(ref) => this.$input1 = ref} required />
-          </Form.Group>
-    
-          <Form.Group controlId="category">
-            <Form.Label>Category</Form.Label>
-            <Form.Control type="text" defaultValue="business" ref={(ref) => this.$input2 = ref} required />
-          </Form.Group>
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            {isLoading ? 'Loading…' : 'Generate PDF'}
-          </Button>
-        </Form>
-      </div>
+      <Container id="app">
+        <h1>PDF News generator</h1>
+        <Row>
+          <Col>
+            <Form onSubmit={!isLoading ? this.handleSubmit : null}>
+              <FormPicker
+                label="Country"
+                values={['US', 'UK', 'PL']}
+                checked={this.state['country']}
+                onChange={this.setValue('country')}
+                name="country"
+              />
+              <FormPicker
+                label="Category"
+                values={['business', 'sport']}
+                checked={this.state['category']}
+                onChange={this.setValue('category')}
+                name="category"
+              />
+              <Button variant="primary" type="submit" disabled={isLoading}>
+                {isLoading ? 'Loading…' : 'Generate PDF'}
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+        <small>news data by newsapi.org</small>
+      </Container>
     )
   }
 }

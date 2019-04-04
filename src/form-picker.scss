@@ -1,0 +1,18 @@
+.form-picker {
+  
+  & > label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+
+  input[type="text"] {
+    width: 3em;
+  }
+}
+
+.form-check-label {
+  padding-top: 0.2em;
+  display: flex;
+  align-items: center;
+}
