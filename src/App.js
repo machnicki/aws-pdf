@@ -8,6 +8,7 @@ import _get from 'lodash/get'
 
 import http from './http'
 import FormPicker from './form-picker'
+import History from './history'
 import './app.scss'
 
 class App extends Component {
@@ -15,6 +16,15 @@ class App extends Component {
     isLoading: false,
     country: 'US',
     category: 'business',
+    documents: [],
+  }
+
+  componentWillMount() {
+    this.getDocuments()
+  }
+
+  handleHistoryClick = id => {
+    this.getDocument({ id })
   }
 
   handleSubmit = (event) => {
@@ -23,8 +33,13 @@ class App extends Component {
 
     const { country, category } = this.state
 
-    http.request({
-      data: { country, category },
+    this.getDocument({ country, category })
+      .then(() => this.getDocuments())
+  }
+
+  getDocument = (data) => {
+    return http.request({
+      data,
       method: 'post',
     })
       .then((response) => {
@@ -34,10 +49,27 @@ class App extends Component {
       .then(() => this.setState({ isLoading: false }))
   }
 
+  getDocuments = () => {
+    this.setState({ isLoading: true })
+
+    http.request({
+      method: 'get',
+    })
+      .then((response) => {
+        if (response.data && response.data.Items) {
+          this.setState({
+            documents: response.data.Items,
+          })
+        }
+      })
+      .catch((error) => console.error('error', _get(error, 'response.data.error') || error))
+      .then(() => this.setState({ isLoading: false }))
+  }
+
   setValue = name => value => this.setState({ [name]: value })
 
   render() {
-    const { isLoading } = this.state
+    const { isLoading, documents } = this.state
 
     return  (
       <Container id="app">
@@ -64,6 +96,9 @@ class App extends Component {
               </Button>
             </Form>
           </Col>
+          {!!documents.length && <Col>
+            <History documents={documents} onClick={this.handleHistoryClick} />
+          </Col>}
         </Row>
         <small>news data by newsapi.org</small>
       </Container>

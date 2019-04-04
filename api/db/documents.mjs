@@ -37,6 +37,22 @@ export const getDocument = async (fileName) => {
   return buffer.toString('utf-8')
 }
 
+export const getDocuments = async () => {
+  const data = await docClient.scan({
+    TableName : 'Documents',
+    ProjectionExpression: 'id',
+    FilterExpression: 'contains(#id, :name)',
+    ExpressionAttributeNames: {
+        '#id': 'id',
+    },
+    ExpressionAttributeValues: {
+        ':name': 'pdf',
+    },
+  }).promise()
+
+  return data
+}
+
 export const deleteDocument = async (fileName) => docClient.delete({
   TableName : 'Documents',
   Key: {

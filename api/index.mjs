@@ -1,5 +1,6 @@
 import express from 'express'
 import { getPDF } from './pdf'
+import { getDocuments } from './db/documents'
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -13,11 +14,11 @@ app.use(function(req, res, next) {
 })
 
 const api = async (req, res) => {
-  const { country, category } = req.body
+  const { country, category, id } = req.body
 
-  if (country && category) {
+  if (country && category || id) {
     try {
-      const response = await getPDF({ country, category })
+      const response = await getPDF({ country, category, id })
       res.send(response)
     } catch (error) {
       res.status(500).send({ error: error.message })
@@ -27,6 +28,16 @@ const api = async (req, res) => {
   }
 }
 
+const documents = async (req, res) => {
+  try {
+    const response = await getDocuments()
+    res.send(response)
+  } catch (error) {
+    res.status(500).send({ error: error.message })
+  }
+}
+
+app.get('/api', documents)
 app.post('/api', api)
 
 // app.use('/pdf', express.static('pdf'))

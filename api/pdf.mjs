@@ -11,9 +11,9 @@ const getAPIData = async ({ country, category }) => {
   throw new Error('Bad response from newsapi!')
 }
 
-export const getPDF = async ({ country, category }) => {
+export const getPDF = async ({ country, category, id }) => {
   const date = format(new Date(), 'YYYY-MM-DD_HH')
-  const fileName = `${country}-${category}-${date}.pdf`
+  const fileName = id || `${country}-${category}-${date}.pdf`
   const fileUrl = await getUrl(fileName)
 
   if (fileUrl) return fileUrl
@@ -39,8 +39,8 @@ export const getPDF = async ({ country, category }) => {
   console.time('generatePDF')
   const pdf = await generatePDF(fileName)
   console.timeEnd('generatePDF')
-  console.time('deleteDocument')
-  await deleteDocument(fileName)
-  console.timeEnd('deleteDocument')
+  // console.time('deleteDocument')
+  // await deleteDocument(fileName)
+  // console.timeEnd('deleteDocument')
   return pdf
 }

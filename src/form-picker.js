@@ -5,7 +5,6 @@ import Form from 'react-bootstrap/Form'
 import './form-picker.scss'
 
 export default class FormPicker extends PureComponent {
-
   handleChange = (value) => () => {
     const _value = value === 'other' ? this.$input.value : value
     this.props.onChange(_value)
