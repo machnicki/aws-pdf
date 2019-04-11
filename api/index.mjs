@@ -1,6 +1,6 @@
 import express from 'express'
 import { getPDF } from './pdf'
-import { getDocuments } from './db/documents'
+import { getDocuments, getTemplate, saveTemplate } from './db/documents'
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -37,6 +37,27 @@ const documents = async (req, res) => {
   }
 }
 
+const template = async (req, res) => {
+  try {
+    if (req.method === 'GET') {
+      const template = await getTemplate(true)
+      res.send(template)
+    } else if (req.method === 'POST') {
+      const { template } = req.body
+      if (template) {
+        await saveTemplate(template)
+        res.send(template)
+      } else  {
+        res.status(500).send({ error: 'You have missed some data' })
+      }
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message })
+  }
+}
+
+app.get('/api/template', template)
+app.post('/api/template', template)
 app.get('/api', documents)
 app.post('/api', api)
 

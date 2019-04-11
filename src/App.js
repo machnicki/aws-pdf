@@ -9,6 +9,7 @@ import _get from 'lodash/get'
 import http from './http'
 import FormPicker from './form-picker'
 import History from './history'
+import Tabs from './tabs'
 import './app.scss'
 
 class App extends Component {
@@ -79,7 +80,7 @@ class App extends Component {
             <Form onSubmit={!isLoading ? this.handleSubmit : null}>
               <FormPicker
                 label="Country"
-                values={['US', 'UK', 'PL']}
+                values={['US', 'GB', 'PL']}
                 checked={this.state['country']}
                 onChange={this.setValue('country')}
                 name="country"
@@ -101,6 +102,7 @@ class App extends Component {
           </Col>}
         </Row>
         <small>news data by newsapi.org</small>
+        <Tabs />
       </Container>
     )
   }
