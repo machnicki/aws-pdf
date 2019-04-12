@@ -5,18 +5,38 @@ import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import _get from 'lodash/get'
 import base64 from 'base-64'
+import Handlebars from 'handlebars'
 
 import http from './http'
+import mock from './apimock'
 import './tabs.scss'
 
 class CustomTabs extends Component {
   state = {
     isLoading: false,
     template: '',
+    preview: '',
   }
 
   componentWillMount() {
     this.templateRequest()
+  }
+
+  handleSelectTabs = key => {
+    if (key === 'preview') this.preparePreview()
+  }
+
+  preparePreview = () => {
+    const { template } = this.state
+
+    if (template && mock.articles) {
+      const hTemplate = Handlebars.compile(template)
+      const html = hTemplate({
+        headline: 'NEWS country / category / date',
+        articles: mock.articles,
+      })
+      this.setState({ preview: html })
+    }
   }
 
   templateRequest = (template) => {
@@ -40,10 +60,10 @@ class CustomTabs extends Component {
   }
 
   render() {
-    const { isLoading, template } = this.state
+    const { isLoading, preview, template } = this.state
 
     return (
-      <Tabs className="tabs">
+      <Tabs className="tabs" onSelect={this.handleSelectTabs}>
         <Tab eventKey="template" title="Template">
           <Form.Control
             as="textarea"
@@ -56,7 +76,7 @@ class CustomTabs extends Component {
           </Button>
         </Tab>
         <Tab eventKey="preview" title="Preview">
-          Preview
+          <div dangerouslySetInnerHTML={{__html: preview}} />
         </Tab>
       </Tabs>
     )
