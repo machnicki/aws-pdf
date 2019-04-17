@@ -1,6 +1,6 @@
 import express from 'express'
 import { getPDF } from './pdf'
-import { getDocuments, getTemplate, saveTemplate } from './db/documents'
+import { getDocument, getDocuments, getTemplate, saveTemplate } from './db/documents'
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -30,8 +30,15 @@ const api = async (req, res) => {
 
 const documents = async (req, res) => {
   try {
-    const response = await getDocuments()
-    res.send(response)
+    const name = req.query.name
+
+    if (name) {
+      const response = await getDocument(name, true)
+      res.send(response)
+    } else {
+      const response = await getDocuments()
+      res.send(response)
+    }
   } catch (error) {
     res.status(500).send({ error: error.message })
   }

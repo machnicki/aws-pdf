@@ -7,7 +7,11 @@ import './history.scss'
 
 export default class History extends PureComponent {
   openPDF = (id) => () => {
-    this.props.onClick(id)
+    this.props.onClick(id, 'PDF')
+  }
+
+  openHTML = (id) => () => {
+    this.props.onClick(id, 'HTML')
   }
 
   render() {
@@ -24,7 +28,7 @@ export default class History extends PureComponent {
               {id}
               <ButtonGroup aria-label="Basic example">
                 <Button onClick={this.openPDF(id)}>PDF</Button>
-                {/* <Button variant="secondary">HTML</Button> */}
+                <Button variant="secondary" onClick={this.openHTML(id)}>HTML</Button>
               </ButtonGroup>
             </li>
           ))}

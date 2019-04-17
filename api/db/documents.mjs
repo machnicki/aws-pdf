@@ -35,13 +35,15 @@ export const saveDocument = async (fileName, html) => docClient.put({
   },
 }).promise()
 
-export const getDocument = async (fileName) => {
+export const getDocument = async (fileName, base64 = false) => {
   const { Item: { html: html64 } } = await docClient.get({
     TableName : 'Documents',
     Key: {
       id: fileName,
     },
   }).promise()
+
+  if (base64) return html64
 
   const buffer = Buffer.from(html64, 'base64')
   return buffer.toString('utf-8')

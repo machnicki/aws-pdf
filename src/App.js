@@ -18,14 +18,16 @@ class App extends Component {
     country: 'US',
     category: 'business',
     documents: [],
+    previewDocument: '',
   }
 
   componentWillMount() {
     this.getDocuments()
   }
 
-  handleHistoryClick = id => {
-    this.getDocument({ id })
+  handleHistoryClick = (id, type) => {
+    if (type === 'HTML') this.setState({ previewDocument: id })
+    else this.getDocument({ id })
   }
 
   handleSubmit = (event) => {
@@ -70,13 +72,13 @@ class App extends Component {
   setValue = name => value => this.setState({ [name]: value })
 
   render() {
-    const { isLoading, documents } = this.state
+    const { isLoading, documents, previewDocument } = this.state
 
     return  (
       <Container id="app">
         <h1>PDF News generator</h1>
         <Row>
-          <Col>
+          <Col sm={documents.length ? 5 : 12}>
             <Form onSubmit={!isLoading ? this.handleSubmit : null}>
               <FormPicker
                 label="Country"
@@ -97,12 +99,12 @@ class App extends Component {
               </Button>
             </Form>
           </Col>
-          {!!documents.length && <Col>
+          {!!documents.length && <Col sm={7}>
             <History documents={documents} onClick={this.handleHistoryClick} />
           </Col>}
         </Row>
         <small>news data by newsapi.org</small>
-        <Tabs />
+        <Tabs documentName={previewDocument} />
       </Container>
     )
   }

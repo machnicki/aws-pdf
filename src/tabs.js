@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
@@ -16,14 +17,30 @@ class CustomTabs extends Component {
     isLoading: false,
     template: '',
     preview: '',
+    documentPreview: '',
+    activeTab: 'template',
   }
 
   componentWillMount() {
     this.templateRequest()
   }
 
+  componentWillReceiveProps({ documentName }) {
+    if (this.props.documentName !== documentName) this.handleSelectTabs(documentName)
+  }
+
   handleSelectTabs = key => {
-    if (key === 'preview') this.preparePreview()
+    this.setState({ activeTab: key })
+
+    switch(key) {
+      case 'preview':
+        this.preparePreview()
+        break
+      case 'template':
+        break
+      default:
+        this.documentPreview(key)
+    }
   }
 
   preparePreview = () => {
@@ -37,6 +54,23 @@ class CustomTabs extends Component {
       })
       this.setState({ preview: html })
     }
+  }
+
+  documentPreview = name => {
+    this.setState({ documentPreview: 'loading...' })
+    http.request({
+      url: `?name=${name}`
+    })
+      .then((response) => {
+        console.log('response.data', response.data)
+        const documentPreview = base64.decode(response.data)
+        this.setState({ documentPreview })
+      })
+      .catch((error) => {
+        const message = _get(error, 'response.data.error') || error
+        console.error('error', message)
+        this.setState({ documentPreview: message })
+      })
   }
 
   templateRequest = (template) => {
@@ -60,10 +94,11 @@ class CustomTabs extends Component {
   }
 
   render() {
-    const { isLoading, preview, template } = this.state
+    const { documentName } = this.props
+    const { isLoading, preview, template, documentPreview, activeTab } = this.state
 
     return (
-      <Tabs className="tabs" onSelect={this.handleSelectTabs}>
+      <Tabs className="tabs" onSelect={this.handleSelectTabs} activeKey={activeTab}>
         <Tab eventKey="template" title="Template">
           <Form.Control
             as="textarea"
@@ -78,9 +113,16 @@ class CustomTabs extends Component {
         <Tab eventKey="preview" title="Preview">
           <div dangerouslySetInnerHTML={{__html: preview}} />
         </Tab>
+        {!!documentName && <Tab eventKey={documentName} title={documentName}>
+          <div dangerouslySetInnerHTML={{__html: documentPreview}} />
+        </Tab>}
       </Tabs>
     )
   }
+}
+
+CustomTabs.propTypes = {
+  documentName: PropTypes.string,
 }
 
 export default CustomTabs
