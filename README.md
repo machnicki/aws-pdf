@@ -1,5 +1,8 @@
 # AWS Lambda PDF News generator
 
+## phnatomjs binary
+Download phantomjs apprioprate to your local ennvironemnt. For AWS Lambda you will need linux version. Save it as `/lambda/phantomjs`.
+
 ## Run locally with Localstack
 
 1. Go to `newsapi.org`, get apiKey for theirs API and set it as `NEWS_API_KEY` env variable on your machine
