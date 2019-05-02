@@ -1,7 +1,7 @@
 # AWS Lambda PDF News generator
 
 ## phnatomjs binary
-Download phantomjs apprioprate to your local ennvironemnt. For AWS Lambda you will need linux version. Save it as `/lambda/phantomjs`.
+Phantomjs binary is to heavy to keep it in git repo. [Download phantomjs appropriate to your local environment.](https://bitbucket.org/ariya/phantomjs/downloads/) For AWS Lambda you will need linux version. Save it as `/lambda/phantomjs`. 
 
 ## Run locally with Localstack
 
